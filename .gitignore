@@ -28,3 +28,17 @@ Thumbs.db
 uploads/
 data/
 database/
+
+# Model checkpoints and large files
+wav2vec2_checkpoints/
+backend/wav2vec2_checkpoints/
+*.pt
+*.dylib
+*.ckpt
+*.h5
+*.onnx
+*.pb
+*.pkl
+*.joblib
+*.npz
+*.npy
