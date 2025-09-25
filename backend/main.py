@@ -1,7 +1,6 @@
 
 
 # This is the backend for my voice sentiment analysis project!
-# (FastAPI ML backend. For GitHub readers: see README for setup and usage.)
 # It uses FastAPI and takes audio, turns it into text with Whisper, and then checks the sentiment for each line using VaderSentiment.
 # It sends back the transcript, overall sentiment, and also the sentiment for each line (with a score).
 

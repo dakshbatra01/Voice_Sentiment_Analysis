@@ -1,0 +1,30 @@
+# Node
+node_modules/
+frontend-app/node_modules/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+backend/uploads/
+
+# Build
+dist/
+build/
+frontend-app/dist/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Env
+.env
+.env.*
+
+# Misc
+uploads/
+data/
+database/
