@@ -1,5 +1,5 @@
 
-// This is the main App component. It just shows the header, the main sentiment app, and a footer.
+// This is the main App component. I made it to show the header, my main sentiment app, and a footer. I wanted to keep things simple and easy to understand.
 import React from 'react';
 import AudioSentimentApp from './AudioSentimentApp';
 

@@ -1,6 +1,6 @@
 
-// This is like the main part of my voice sentiment project!
-// Here you can record or upload audio, send it to the backend, and then see the results with some cool graphs and stuff.
+// This is basically the main part of my voice sentiment project. I made this to learn how to do real-time audio analysis!
+// You can record or upload audio here, and then it goes to my backend. I wanted to see the results with some cool graphs, so I added those too.
 
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
@@ -22,7 +22,7 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement);
 
 
-// This function just picks a color for the sentiment badge (like green for positive, red for negative, orange for neutral)
+// I wrote this function to pick a color for the sentiment badge. I thought green for positive, red for negative, and orange for neutral would look nice.
 const badgeColor = (label) => {
   if (label === 'positive') return '#4caf50';
   if (label === 'negative') return '#f44336';
@@ -30,7 +30,7 @@ const badgeColor = (label) => {
   return '#90a4ae';
 };
 
-// Tab labels for the three sections
+// These are the tab labels for the three sections. I wanted it to be easy to switch between modes.
 const TABS = [
   { key: 'normal', label: 'Normal Recording' },
   { key: 'live', label: 'Live Recording' },
@@ -43,20 +43,20 @@ function AudioSentimentApp() {
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioURL, setAudioURL] = useState(null);
   const [file, setFile] = useState(null);
-  // Separate result/loading for each tab
+  // I made separate state for each tab so I could keep track of results and loading for each one. It was easier for me to debug this way.
   const [normalResult, setNormalResult] = useState(null);
   const [uploadResult, setUploadResult] = useState(null);
   const [normalLoading, setNormalLoading] = useState(false);
   const [uploadLoading, setUploadLoading] = useState(false);
-  // This is for the live recording mode (so you can see feedback while talking)
+  // This part is for live recording mode. I wanted to see feedback while I was talking, so I added this.
   const [liveRecording, setLiveRecording] = useState(false);
-  const [livePoints, setLivePoints] = useState([]); // array of {t, compound, label}
+  const [livePoints, setLivePoints] = useState([]); // This is an array of {t, compound, label}. I use it for the live chart.
   const liveRecorderRef = useRef(null);
   const liveChunkIntervalRef = useRef(null);
-  // State for which tab is selected
+  // This keeps track of which tab I selected. I thought it would be cool to have tabs for different modes.
   const [selectedTab, setSelectedTab] = useState('normal');
 
-  // This function starts recording audio from your mic (not live mode, just normal recording)
+  // This function starts recording audio from my mic (not live mode, just normal recording). I wanted to see how easy it was to record audio in React.
   const startRecording = async () => {
     setRecording(true);
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -75,13 +75,13 @@ function AudioSentimentApp() {
     recorder.start();
   };
 
-  // This stops the normal recording (not the live one)
+  // This stops the normal recording (not the live one). I needed this so I could analyze the audio after recording.
   const stopRecording = () => {
     setRecording(false);
     if (mediaRecorder) mediaRecorder.stop();
   };
 
-  // This is for live recording! It records 5 second chunks and sends them to the backend so you get feedback while talking
+  // This is for live recording! It records 5 second chunks and sends them to the backend. I wanted to get feedback while I was talking, so I made it work like this.
   const startLiveRecording = async () => {
     setLiveRecording(true);
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -93,33 +93,33 @@ function AudioSentimentApp() {
     recorder.start();
     liveRecorderRef.current = { recorder, stream, chunks };
 
-  // Every 5 seconds, it stops and sends the chunk, then starts again (so you get live updates)
+  // Every 5 seconds, it stops and sends the chunk, then starts again. I did this so I could get live updates while speaking.
     liveChunkIntervalRef.current = setInterval(async () => {
       const r = liveRecorderRef.current;
       if (!r) return;
       r.recorder.stop();
-  // When the recorder stops, this runs (so we can send the chunk to the backend)
+  // When the recorder stops, this runs. I use it to send the chunk to the backend for analysis.
       r.recorder.onstop = async () => {
         const blob = new Blob(r.chunks, { type: 'audio/wav' });
-  // Clear out the chunks so we can start fresh for the next bit
+  // I clear out the chunks here so I can start fresh for the next bit. Otherwise, it gets messy.
         r.chunks = [];
-  // Actually send the chunk to the backend (Node -> Python)
+  // This is where I actually send the chunk to the backend (Node -> Python). I wanted to see how fast it could analyze my speech.
         const form = new FormData();
         form.append('chunk', blob, 'chunk.wav');
             try {
               const res = await axios.post('http://localhost:3001/forward-chunk', form, { timeout: 20000 });
               const data = res.data;
               const point = { t: new Date().toLocaleTimeString(), compound: data.compound, label: data.label };
-              // Only keep the last 20 points so the chart doesn't get too crowded
+              // I only keep the last 20 points so the chart doesn't get too crowded. It looked weird with too many points.
               setLivePoints(prev => {
                 const next = [...prev, point];
                 if (next.length > 20) next.shift();
                 return next;
               });
         } catch (e) {
-          // ignore for now
+          // I just ignore errors for now. I should probably handle them better, but I wanted to get the main stuff working first.
         }
-  // Start the recorder again for the next chunk
+  // I start the recorder again for the next chunk here. This way, it keeps looping and I get live feedback.
         r.recorder = new MediaRecorder(r.stream);
         r.recorder.ondataavailable = (e) => { if (e.data.size > 0) r.chunks.push(e.data); };
         r.recorder.start();
@@ -141,7 +141,7 @@ function AudioSentimentApp() {
     }
   };
 
-  // This just picks an emoji and color for the label (so it looks fun)
+  // I made this to pick an emoji and color for the label. I thought it would make the app look more fun and less boring.
   const labelEmoji = (label) => {
     if (label === 'positive') return { emoji: '😄', color: '#4caf50' };
     if (label === 'negative') return { emoji: '😢', color: '#f44336' };
@@ -152,8 +152,8 @@ function AudioSentimentApp() {
     setFile(e.target.files[0]);
   };
 
-  // This function sends the audio file to the backend so it can analyze it (for normal recording or upload)
-  // mode: 'normal' or 'upload'
+  // This function sends the audio file to my backend so it can analyze it. I use it for both normal recording and upload mode.
+  // The mode is either 'normal' or 'upload'. I use this to know which tab I'm on.
   const analyzeAudio = async (audio, mode = 'normal') => {
     if (mode === 'normal') {
       setNormalLoading(true);
@@ -185,11 +185,11 @@ function AudioSentimentApp() {
     }
   };
 
-  // This function shows the sentiment results and all the graphs (like pie, bar, and line)
-  // Pass in which result to render
+  // This function shows the sentiment results and all the graphs (like pie, bar, and line). I wanted to visualize the data so I could understand it better.
+  // I pass in which result to render here. It helps me reuse the function for different tabs.
   const renderSentiment = (result) => {
     if (!result) return null;
-    // ...existing code, just use 'result' as above...
+  // I just use 'result' as above. I didn't want to repeat myself.
     let pos = 0, neg = 0, neu = 0;
     if (result.lines) {
       result.lines.forEach(line => {
@@ -303,7 +303,7 @@ function AudioSentimentApp() {
         </div>
       );
     }
-    // If there are no lines, just show the transcript and the overall sentiment (no fancy graphs)
+  // If there are no lines, I just show the transcript and the overall sentiment. I skip the fancy graphs in that case.
     return (
       <div style={{ marginTop: 24 }}>
         <h3>Transcript</h3>
@@ -329,12 +329,12 @@ function AudioSentimentApp() {
     );
   };
 
-  // This is the main UI: you can record or upload audio, and then see the results (with all the graphs)
+  // This is the main UI. You can record or upload audio, and then see the results with all the graphs I added.
   return (
     <div style={{ maxWidth: 700, margin: '40px auto', padding: 32, background: '#fff', borderRadius: 16, boxShadow: '0 2px 16px #0002' }}>
       <h1 style={{ textAlign: 'center', color: '#1976d2', marginBottom: 32 }}>Get real-time sentiment analysis</h1>
 
-      {/* Tabbed Section Selector */}
+  {/* This is the tabbed section selector. I thought tabs would make it easier to switch between modes. */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: 0, margin: '32px 0 24px 0' }}>
         {TABS.map(tab => (
           <button
