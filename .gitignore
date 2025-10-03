@@ -1,0 +1,44 @@
+
+# Node dependencies (never upload)
+node_modules/
+frontend-app/node_modules/
+
+# Python virtualenv and cache
+.venv/
+__pycache__/
+*.pyc
+
+# Local uploads and runtime data
+uploads/
+backend/uploads/
+data/
+database/
+
+# Model checkpoints and ML artifacts
+wav2vec2_checkpoints/
+backend/wav2vec2_checkpoints/
+*.pt
+*.dylib
+*.ckpt
+*.h5
+*.onnx
+*.pb
+*.pkl
+*.joblib
+*.npz
+*.npy
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs and environment
+*.log
+.env
+.env.*
+
+# Build output (keep docs/ for GitHub Pages)
+dist/
+build/
+frontend-app/dist/
+# DO NOT ignore docs/ (GitHub Pages uses docs/)
