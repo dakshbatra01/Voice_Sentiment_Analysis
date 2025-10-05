@@ -10,3 +10,4 @@ librosa
 pydub
 ffmpeg-python
 motor
+python-dotenv

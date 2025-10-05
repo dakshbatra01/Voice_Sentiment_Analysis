@@ -7,7 +7,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const axios = require('axios');
-
+require('dotenv').config();
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
@@ -15,7 +15,7 @@ const upload = multer({ dest: 'uploads/' });
 // This part lets my React frontend talk to this backend (CORS stuff). I added this so my browser wouldn't block requests.
 const cors = require('cors');
 app.use(cors({
-  origin: 'http://localhost:5173', // My frontend runs here. I set this so it matches where I run React.
+  origin: process.env.APP_URL, // My frontend runs here. I set this so it matches where I run React.
   credentials: true
 }));
 
@@ -33,7 +33,7 @@ app.post('/analyze-audio', upload.single('audio'), async (req, res) => {
   // multer gives me a path relative to process cwd; I resolve it to an absolute path so Python can read it.
     const audioPath = path.resolve(req.file.path);
   // I send the audio to the FastAPI backend here. This is where the real analysis happens.
-    const pythonApiUrl = 'http://localhost:8000/analyze-audio/';
+    const pythonApiUrl = `${process.env.PYTHON_URL}/analyze-audio/`;
     const fs = require('fs');
     const FormData = require('form-data');
     const form = new FormData();
@@ -56,7 +56,7 @@ app.post('/forward-chunk', upload.single('chunk'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No chunk uploaded' });
     const audioPath = path.resolve(req.file.path);
-    const pythonApiUrl = 'http://localhost:8000/analyze-chunk/';
+    const pythonApiUrl = `${process.env.PYTHON_URL}/analyze-chunk/`;
     const fs = require('fs');
     const FormData = require('form-data');
     const form = new FormData();

@@ -8,12 +8,13 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 import whisper
 import tempfile
+from dotenv import load_dotenv
 import os
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 app = FastAPI()
-
-
+load_dotenv()  # Load environment variables from a .env file
+App_url = os.getenv("APP_URL")
 # Loading the Whisper model. I picked 'base' because it's faster, but you can use 'small' or 'large' for better accuracy if you want.
 model = whisper.load_model("base")
 
@@ -26,7 +27,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # This part lets my frontend (React app) talk to this backend without CORS issues. I had to add this or else my browser would block the requests.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5174"],  # My frontend runs here. I set this so it matches where I run React.
+    allow_origins=[App_url],  # My frontend runs here. I set this so it matches where I run React.
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
