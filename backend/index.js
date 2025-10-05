@@ -19,6 +19,11 @@ app.use(cors({
   credentials: true
 }));
 
+// Log environment variables for debugging
+console.log('Environment variables loaded:');
+console.log('- Frontend URL:', process.env.APP_URL);
+console.log('- Python URL:', process.env.PYTHON_URL);
+
 
 // This is just a simple endpoint to check if this backend is running. I use it to make sure Node is working.
 app.get('/', (req, res) => {
