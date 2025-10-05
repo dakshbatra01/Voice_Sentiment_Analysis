@@ -1,13 +1,6 @@
 fastapi
 uvicorn
 openai-whisper
-vosk
-transformers
-nltk
-textblob
 vaderSentiment
-librosa
-pydub
 ffmpeg-python
-motor
 python-dotenv
