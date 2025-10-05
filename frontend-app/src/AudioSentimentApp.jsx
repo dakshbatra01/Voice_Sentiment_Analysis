@@ -107,7 +107,7 @@ function AudioSentimentApp() {
         const form = new FormData();
         form.append('chunk', blob, 'chunk.wav');
             try {
-              const res = await axios.post('http://localhost:3001/forward-chunk', form, { timeout: 20000 });
+              const res = await axios.post(`${import.meta.env.VITE_APP_URL}/forward-chunk`, form, { timeout: 20000 });
               const data = res.data;
               const point = { t: new Date().toLocaleTimeString(), compound: data.compound, label: data.label };
               // I only keep the last 20 points so the chart doesn't get too crowded. It looked weird with too many points.
@@ -165,7 +165,7 @@ function AudioSentimentApp() {
     const formData = new FormData();
     formData.append('audio', audio);
     try {
-      const res = await axios.post('http://localhost:3001/analyze-audio', formData);
+      const res = await axios.post(`${import.meta.env.VITE_APP_URL}/analyze-audio`, formData);
       if (mode === 'normal') {
         setNormalResult(res.data);
       } else {
